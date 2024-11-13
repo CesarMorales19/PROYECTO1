@@ -1,28 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión</title>
-</head>
-<body>
-    <h1>Iniciar sesión</h1>
+@extends('layouts.app')
 
-    @if(session('error'))
-        <div style="color: red;">
-            {{ session('error') }}
-        </div>
+@section('content')
+<div>
+    <h2>Iniciar Sesión</h2>
+    @if($errors->any())
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     @endif
-
-    <form action="{{ url('login') }}" method="POST">
+    <form action="{{ route('login') }}" method="POST">
         @csrf
         <label for="email">Correo electrónico:</label>
-        <input type="email" name="email" id="email" value="{{ old('email') }}" required><br>
+        <input type="email" name="email" id="email" required>
 
         <label for="password">Contraseña:</label>
-        <input type="password" name="password" id="password" required><br>
+        <input type="password" name="password" id="password" required>
 
-        <button type="submit">Iniciar sesión</button>
+        <button type="submit">Iniciar Sesión</button>
     </form>
-</body>
-</html>
+</div>
+@endsection

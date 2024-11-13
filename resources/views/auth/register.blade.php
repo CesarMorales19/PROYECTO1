@@ -1,19 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+<div>
+    <h2>Registro</h2>
+    @if($errors->any())
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
+    <form action="{{ route('register') }}" method="POST">
+        @csrf
+        <label for="name">Nombre:</label>
+        <input type="text" name="name" id="name" required>
+        
+        <label for="email">Correo electrónico:</label>
+        <input type="email" name="email" id="email" required>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+        <label for="password">Contraseña:</label>
+        <input type="password" name="password" id="password" required>
 
-                        <div class="form-group">
-                            <label for="name">{{ __('Name') }}</label>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autofocus>
+        <label for="password_confirmation">Confirmar contraseña:</label>
+        <input type="password" name="password_confirmation" id="password_confirmation" required>
 
-                            @error('name')
-                                <span
+        <button type="submit">Registrarse</button>
+    </form>
+</div>
+@endsection

@@ -1,54 +1,73 @@
 <?php
 
+// app/Http/Controllers/AuthController.php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
+    // Mostrar formulario de registro
+    public function showRegisterForm()
     {
-        return view('auth.login');
+        return view('auth.register');
     }
 
-    public function login(Request $request)
+    // Manejar el registro
+    public function register(Request $request)
     {
-        // Validar los datos de entrada
+        // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|min:6',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Intentar autenticar al usuario
-        $user = User::where('email', $request->email)->first();
+        // Crear el usuario
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            // Si el usuario es válido, iniciar sesión
-            Auth::login($user);
-
-            // Redirigir según el rol del usuario
-            if ($user->role == 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-
-            return redirect()->route('user.dashboard');
-        }
-
-        // Si la autenticación falla
-        return redirect()->route('login')->with('error', 'Credenciales incorrectas');
+        return redirect()->route('login')->with('success', 'Usuario registrado exitosamente.');
     }
 
+    // Mostrar formulario de login
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    // Manejar el login
+    public function login(Request $request)
+    {
+        // Validar los datos del formulario
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        // Intentar autenticar al usuario
+        if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->route('home')->with('success', 'Login exitoso.');
+        }
+
+        return redirect()->back()->withErrors(['email' => 'Credenciales incorrectas.']);
+    }
+
+    // Cerrar sesión
     public function logout()
     {
-        Auth::logout();
-        return redirect()->route('login');
+        auth()->logout();
+        return redirect()->route('login')->with('success', 'Has cerrado sesión.');
     }
 }

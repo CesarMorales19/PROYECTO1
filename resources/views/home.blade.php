@@ -1,5 +1,6 @@
 @extends('layouts.app')
+
 @section('content')
-    <h1>BIENVENIDO A LA PÁGINA PRINCIPAL</h1>
-    <p>HAS INICIADO SESIÓN EXITOSAMENTE</p>
+    <h1>Bienvenido a la página principal</h1>
+    <p>Has iniciado sesión exitosamente.</p>
 @endsection
