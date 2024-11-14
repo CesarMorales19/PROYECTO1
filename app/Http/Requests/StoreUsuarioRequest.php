@@ -11,7 +11,7 @@ class StoreUsuarioRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true; // Permitir que todos los usuarios realicen esta solicitud
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255', // Nombre es obligatorio, debe ser una cadena y no exceder 255 caracteres
+            'email' => 'required|email|unique:users,email', // Correo es obligatorio, debe ser un correo válido y único en la tabla users
         ];
     }
 }

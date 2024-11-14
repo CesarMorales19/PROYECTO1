@@ -16,14 +16,14 @@ class isAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
-       
-        // Verificar si el usuario no está autenticado
+        //dd('estas entrando al middleware');
         if (!Auth::check()) {
-            
-            // Redirigir al login con un mensaje de error si no está autenticado
-            return redirect()->route('login')->withErrors(['error' => 'Debe iniciar sesión para acceder.']);
+            return redirect()->route(route: 'home');
+        }else{
+            if(Auth::user()->role != 'admin'){
+                return redirect()->route(route: 'home');
+            }
         }
-
         return $next($request);
     }
 }

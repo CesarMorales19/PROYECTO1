@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Usuario;
 use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use RealRashid\SweetAlert\Facades\Alert;
-
+use RealRashid\SweetAlert\SweetAlertServiceProvider;
+use RealRashid\SweetAlert\Facades\Alert; #usado para el sweet alert
+use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
@@ -19,24 +19,20 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        $a = "LLegas a la funcion";
-        Log::emergency($a);
-        Log::alert(message: $a);
-        Log::critical($a);
-        Log::error($a);
-        Log::warning($a);
-        Log::notice($a);
-        Log::info($a);
-        Log::debug($a);
-        $user = Usuario::all();
-        return view('vistas.index', compact('user'));
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para acceder a esta página.');
+        }
+    $user = Usuario::all();
+    return view('index', compact('user')); 
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
+        /*return view('create');*/
         return view('vistas.create');
     }
 
@@ -44,28 +40,38 @@ class UsuarioController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //dd($request->all());
-        $validated= $request->validate(
-            ['nombre' => 'required|string|max:10']
-        );
+{
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:10',
+        'email' => 'required|email',
+        'password' => 'required|string|min:6'
+    ]);
 
-        Usuario::create([
-            'name' => $validated['nombre'],
-            'email' =>  Str::random(10).'@gmail',
-            'password' => Hash::make("Hola123")
-        ]);
-        Alert::success('¡Usuario Creado!', 'El usuario ha sido creado exitosamente.')->flash();
-        return redirect()->route('user.list');
+    // Determinar el rol en función del dominio del correo electrónico
+    $role = Str::endsWith($validated['email'], '@admin.com') ? 'admin' : 'user';
 
-    }
+    // Crear el usuario con los datos ingresados y el rol determinado
+    Usuario::create([
+        'name' => $validated['nombre'],
+        'email' => $validated['email'],
+        'password' => Hash::make($validated['password']),
+        'role' => $role
+    ]);
+
+    Alert::success('Éxito', 'El usuario ha sido creado')->flash();
+
+    return redirect()->route('user.list');
+}
+
+    
+
 
     /**
      * Display the specified resource.
      */
     public function show(Usuario $usuario)
     {
-        //
+        return view('show');
     }
 
     /**
@@ -76,45 +82,36 @@ class UsuarioController extends Controller
         //dd($id);
         $usuario = Usuario::find($id);
         //dd($usuario);
-        return view('vistas.update',compact('usuario'));
+        return view('vistas.update', compact('usuario'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-
-    public function update(Request $request){
-        //dd($request->all());
+    public function update(Request $request)
+    {
         $usuario = Usuario::find($request->id);
         $usuario->name = $request->nombre;
         $usuario->save();
-        Alert::success('Éxito', 'Los datos han sido guardados correctamente.');
+        Alert::success('Éxito', 'El usuario ha sido actualizado')->flash();
         return redirect()->route('user.list');
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        //dd($id);
-        $usuario= Usuario::find($id);
+        //BORRADO LOGICO: CAMBIA EL STATUS DE ACTIVO A INACTIVO
+        $usuario = Usuario::find($id);
         $usuario->delete();
-        Alert::success('Éxito', 'Los datos han sido guardados correctamente.');
+        Alert::success('ELIMINADO', '¡USUARIO ELIMINADO!');
         return redirect()->route('user.list');
     }
 
-    public function FunctionTest() {}
-
-    public function DeveloperFunction() {}
-
     public function list(){
-
         $usuarios = Usuario::paginate(4);
-
         #dd($usuarios);
-
         return view('vistas.list_users', compact('usuarios'));
     }
 }
