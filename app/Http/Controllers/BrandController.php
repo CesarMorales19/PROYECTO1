@@ -35,7 +35,7 @@ class BrandController extends Controller
         // Usar SweetAlert para mostrar la alerta
         Alert::success('Éxito', 'Marca creada exitosamente')->flash();
 
-        return redirect()->route('brands.index');
+        return response()->json(['success' => true]);
     }
 
     // Mostrar detalles de una marca
@@ -63,7 +63,7 @@ class BrandController extends Controller
         // Usar SweetAlert para mostrar la alerta
         Alert::success('Éxito', 'Marca actualizada exitosamente')->flash();
 
-        return redirect()->route('brands.index');
+        return response()->json(['success' => true]);
     }
 
     // Eliminar una marca

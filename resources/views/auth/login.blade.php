@@ -8,7 +8,7 @@
                 <h3>Iniciar sesión</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('login') }}" method="post">
+                <form action="{{ route('login') }}" method="post" id="login_form">
                     @csrf
                     
                     <div class="mb-3">
@@ -30,5 +30,35 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#login_form').on('submit', function(event) {
+                event.preventDefault();
+                alert('Iniciando sesion');
+                var data = $(this).serialize();
+                console.log(data);
+                var url = $(this).attr('action');
+                console.log(url);
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        alert('Credenciales correctas, iniciando sesión');
+                        window.location.href = "{{ route('home') }}";
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert('Hubo un error al iniciar sesion. Intenta de nuevo.');
+                    }
+                });
+            });
+        });
+    </script>
 </div>
 @endsection

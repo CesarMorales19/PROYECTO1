@@ -42,7 +42,7 @@ class ProductController extends Controller
         // Usar SweetAlert para mostrar la alerta de éxito
         Alert::success('Éxito', 'Producto creado exitosamente.')->flash();
 
-        return redirect()->route('products.index');
+        return response()->json(['success' => true]);
     }
 
     // Mostrar detalles de un producto
@@ -75,7 +75,7 @@ class ProductController extends Controller
         // Usar SweetAlert para mostrar la alerta de éxito
         Alert::success('Éxito', 'Producto actualizado exitosamente.')->flash();
 
-        return redirect()->route('products.index');
+        return response()->json(['success' => true]);
     }
 
     // Eliminar un producto

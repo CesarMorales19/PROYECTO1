@@ -48,7 +48,7 @@ class OrderItemController extends Controller
         // Usar SweetAlert para mostrar la alerta de éxito
         Alert::success('Éxito', 'Elemento agregado a la orden')->flash();
 
-        return redirect()->route('orderitems.index', $order);
+        return response()->json(['success' => true]);;
     }
 
 
@@ -74,7 +74,7 @@ class OrderItemController extends Controller
         // Usar SweetAlert para mostrar la alerta de éxito
         Alert::success('Éxito', 'Elemento de la orden actualizado')->flash();
 
-        return redirect()->route('orderitems.index', $order);
+        return response()->json(['success' => true]);
     }
 
     // Eliminar un elemento de la orden

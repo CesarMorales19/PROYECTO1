@@ -60,7 +60,7 @@ class UsuarioController extends Controller
 
     Alert::success('Éxito', 'El usuario ha sido creado')->flash();
 
-    return redirect()->route('user.list');
+    return response()->json(['success' => true]);
 }
 
     
@@ -94,7 +94,7 @@ class UsuarioController extends Controller
         $usuario->name = $request->nombre;
         $usuario->save();
         Alert::success('Éxito', 'El usuario ha sido actualizado')->flash();
-        return redirect()->route('user.list');
+        return response()->json(['success' => true]);
     }
 
     /**

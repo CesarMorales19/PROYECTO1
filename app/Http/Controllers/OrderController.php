@@ -41,7 +41,7 @@ class OrderController extends Controller
         // Usar SweetAlert para mostrar la alerta de éxito
         Alert::success('Éxito', 'Orden creada exitosamente')->flash();
 
-        return redirect()->route('orders.index');
+        return response()->json(['success' => true]);
     }
 
     // Mostrar detalles de una orden
@@ -73,7 +73,7 @@ class OrderController extends Controller
         // Usar SweetAlert para mostrar la alerta de éxito
         Alert::success('Éxito', 'Orden actualizada exitosamente')->flash();
 
-        return redirect()->route('orders.index');
+        return response()->json(['success' => true]);;
     }
 
     // Eliminar una orden

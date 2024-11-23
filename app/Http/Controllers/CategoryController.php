@@ -38,7 +38,7 @@ class CategoryController extends Controller
         Alert::success('Éxito', 'Categoría creada exitosamente')->flash();
 
         // Redirigir al listado de categorías
-        return redirect()->route('categories.index');
+        return response()->json(['success' => true]);;
     }
 
     // Mostrar una categoría específica
@@ -69,7 +69,7 @@ class CategoryController extends Controller
         Alert::success('Éxito', 'Categoría actualizada exitosamente')->flash();
 
         // Redirigir al listado de categorías
-        return redirect()->route('categories.index');
+        return response()->json(['success' => true]);;
     }
 
     // Eliminar una categoría
