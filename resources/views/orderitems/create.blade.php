@@ -4,7 +4,7 @@
     <div class="container">
         <h1>Agregar Elemento a la Orden #{{ $order->id }}</h1>
 
-        <form action="{{ route('orderitems.store', $order) }}" method="POST">
+        <form action="{{ route('orderitems.store', $order) }}" method="POST" id="create_orderitems_form">
             @csrf
 
             <div class="form-group">
@@ -29,5 +29,35 @@
 
             <button type="submit" class="btn btn-success mt-3">Agregar Elemento</button>
         </form>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#create_orderitems_form').on('submit', function(event) {
+                event.preventDefault();
+                alert('ENVIO DE FORMULARIO');
+                var data = $(this).serialize();
+                console.log(data);
+                var url = $(this).attr('action');
+                console.log(url);
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        alert('items creados con éxito');
+                        window.location.href = "{{ route('orderitems.index') }}";
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert('Hubo un error al crear los items. Intenta de nuevo.');
+                    }
+                });
+            });
+        });
+    </script>
     </div>
 @endsection

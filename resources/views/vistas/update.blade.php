@@ -14,7 +14,7 @@
                 <h4 class="mb-0">Actualizar Usuario</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('user.update.data') }}" method="post">
+                <form id="update_form" action="{{ route('user.update.data') }}" method="post">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" value="{{ $usuario->id }}">
                     
@@ -31,4 +31,38 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#update_form').on('submit', function(event) {
+                event.preventDefault(); 
+                alert('Verificando datos...');
+
+                let data = $(this).serialize(); 
+                console.log(data);
+
+                let url = $(this).attr('action'); 
+                console.log(url);
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        alert('Usuario actualizado correctamente.');
+                        window.location.href = "{{ route('home') }}"; 
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('Ocurrió un error al actualizar el usuario.');
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

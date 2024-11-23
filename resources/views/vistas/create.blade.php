@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Formulario de Usuario</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -25,9 +26,8 @@
                                 </ul>
                             </div>
                         @endif
-                        
-                        <form action="{{ route('user.store') }}" method="post">
-                            {{ csrf_field() }}
+                        <form action="{{ route('user.store') }}" method="post" id="create_user_form">
+                            @csrf
                             <div class="form-group">
                                 <label for="nombre">Nombre:</label>
                                 <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingrese su nombre" required>
@@ -52,10 +52,37 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#create_user_form').on('submit', function(event) {
+                event.preventDefault();
+                alert('ENVIO DE FORMULARIO');
+
+                var data = $(this).serialize();
+                var url = $(this).attr('action');
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        alert('Usuario creado con éxito');
+                        window.location.href = "{{ route('user.list') }}";
+                    },
+                    error: function(error) {
+                        alert('Hubo un error al crear el usuario. Intenta de nuevo.');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
-
-

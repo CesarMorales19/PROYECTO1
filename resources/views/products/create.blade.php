@@ -4,7 +4,7 @@
     <div class="container">
         <h1>Crear Producto</h1>
 
-        <form action="{{ route('products.store') }}" method="POST">
+        <form action="{{ route('products.store') }}" method="POST" id="create_products_form">
             @csrf
             <div class="form-group">
                 <label for="name">Nombre</label>
@@ -36,5 +36,35 @@
             </div>
             <button type="submit" class="btn btn-primary mt-3">Guardar</button>
         </form>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#create_products_form').on('submit', function(event) {
+                event.preventDefault();
+                alert('ENVIO DE FORMULARIO');
+                var data = $(this).serialize();
+                console.log(data);
+                var url = $(this).attr('action');
+                console.log(url);
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        alert('producto creado con éxito');
+                        window.location.href = "{{ route('products.index') }}";
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert('Hubo un error al crear el producto. Intenta de nuevo.');
+                    }
+                });
+            });
+        });
+    </script>
     </div>
 @endsection

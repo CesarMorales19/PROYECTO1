@@ -15,7 +15,7 @@
             </div>
         @endif
 
-        <form action="{{ route('orderitems.update', [$order->id, $orderItem->id]) }}" method="POST">
+        <form action="{{ route('orderitems.update', [$order->id, $orderItem->id]) }}" method="POST" id="edit_orderitems_form">
             @csrf
             @method('PUT')
 
@@ -46,4 +46,35 @@
             <a href="{{ route('orderitems.index', $order) }}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#edit_orderitems_form').on('submit', function(event){
+            event.preventDefault(); 
+            alert('ENVIO DE FORMULARIO');
+            let data = $(this).serialize(); 
+            console.log(data);
+            let url = $(this).attr('action'); 
+            console.log(url);
+            data += '&_method=PUT';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+                },
+                success: function(response){
+                    console.log(response);
+                    alert('item actualizado correctamente');
+                    window.location.href = "{{ route('orderitems.index') }}"; 
+                },
+                error: function(error){
+                    console.error(error);
+                    alert('Ocurrió un error al actualizar el item.');
+                }
+            });
+        });
+    });
+</script>
 @endsection

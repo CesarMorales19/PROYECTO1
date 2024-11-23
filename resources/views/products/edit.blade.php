@@ -4,7 +4,7 @@
     <div class="container">
         <h1>Editar Producto</h1>
 
-        <form action="{{ route('products.update', $product) }}" method="POST">
+        <form action="{{ route('products.update', $product) }}" method="POST" id="edit_products_form">
             @csrf
             @method('PUT')
             <div class="form-group">
@@ -42,4 +42,35 @@
             <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
         </form>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#edit_products_form').on('submit', function(event){
+            event.preventDefault(); 
+            alert('ENVIO DE FORMULARIO');
+            let data = $(this).serialize(); 
+            console.log(data);
+            let url = $(this).attr('action'); 
+            console.log(url);
+            data += '&_method=PUT';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+                },
+                success: function(response){
+                    console.log(response);
+                    alert('producto actualizado correctamente');
+                    window.location.href = "{{ route('products.index') }}"; 
+                },
+                error: function(error){
+                    console.error(error);
+                    alert('Ocurrió un error al actualizar el producto.');
+                }
+            });
+        });
+    });
+</script>
 @endsection
